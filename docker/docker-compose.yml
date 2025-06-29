@@ -5,12 +5,13 @@ services:
       context: ..                         # ← raiz do projeto
       dockerfile: docker/php/Dockerfile   # ← Dockerfile dentro de docker/php
     volumes:
-      - ../laravel:/var/www/html          # hot-reload do código Laravel
+      - ../laravel:/var/www/html  
+              # hot-reload do código Laravel
     environment:
       PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
-    # ↓ Só adicione depois que o arquivo existir (primeiro 'create-project')
-    # env_file:
-    #   - ../laravel/.env
+
+    env_file: 
+      - ../laravel/.env
     depends_on:
       - db
       - redis
@@ -19,12 +20,14 @@ services:
 
 # ────────────────────────────── QUEUE WORKER ──────────────────────────────
   queue:
-    image: app                            # reutiliza a mesma imagem recém-buildada
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile                           # reutiliza a mesma imagem recém-buildada
     command: ["start-container", "queue"]
     volumes:
       - ../laravel:/var/www/html
-    # env_file:
-    #   - ../laravel/.env
+    env_file: 
+      - ../laravel/.env
     depends_on:
       - db
       - redis

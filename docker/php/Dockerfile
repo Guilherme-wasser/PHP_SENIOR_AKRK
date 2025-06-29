@@ -8,15 +8,14 @@ WORKDIR /app
 COPY ./laravel/composer.json ./laravel/composer.lock ./
 RUN composer install --no-dev --prefer-dist --no-scripts --no-progress --no-interaction
 
-
 # ─────────── Stage 2 – Final PHP-FPM image ───────────
 FROM php:8.3-fpm-alpine
 
 # Extensões PHP requeridas pelo Laravel
 RUN apk add --no-cache \
-      libpng-dev libjpeg-turbo-dev freetype-dev icu-dev oniguruma-dev \
+  libpng libpng-dev libjpeg-turbo libjpeg-turbo-dev freetype freetype-dev icu-libs icu-dev oniguruma-dev \
   && docker-php-ext-install pdo_mysql bcmath intl gd \
-  && apk del libpng-dev libjpeg-turbo-dev freetype-dev
+  && apk del libpng-dev libjpeg-turbo-dev freetype-dev icu-dev oniguruma-dev
 
 # Composer global
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -33,6 +32,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Entrypoint que decide entre php-fpm ou queue
 COPY ./docker/start-entrypoint.sh /usr/local/bin/start-container
+COPY ./docker/php/wait-for.sh     /usr/local/bin/wait-for.sh
+RUN  chmod +x /usr/local/bin/start-container /usr/local/bin/wait-for.sh
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 9000
