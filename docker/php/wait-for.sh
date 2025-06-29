@@ -1,10 +1,11 @@
 #!/usr/bin/env sh
-host="$1"; shift
-port="$1"; shift
+# Usage: wait-for.sh host port
+host="$1"
+port="$2"
 
-until nc -z "$host" "$port"; do
-  echo "⏳  Waiting for $host:$port…" >&2
+echo "⏳  Waiting for $host:$port…"
+while ! nc -z "$host" "$port" >/dev/null 2>&1; do
   sleep 1
 done
 
-exec "$@"
+echo "✅  $host:$port is up"

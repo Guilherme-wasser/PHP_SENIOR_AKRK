@@ -21,6 +21,9 @@ if [ "$role" = "app" ]; then
 
   # migrações + seed (idempotente)
   php artisan migrate --force --seed
+
+  [ ! -L public/storage ] && php artisan storage:link
+  
 fi
 
 ###############################################################################

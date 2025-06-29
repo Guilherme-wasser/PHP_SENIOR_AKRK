@@ -12,16 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Chama os seeders específicos
         $this->call([
             AdminUserSeeder::class,
             FundSeeder::class,
         ]);
 
-        // Opcional: factory de teste, se quiser
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Test User apenas se ainda não existir
+        \App\Models\User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name'     => 'Test User',
+                'password' => bcrypt('password'),  // se quiser autenticar
+                'role'     => 'user',
+            ]
+        );
     }
 }
