@@ -1,22 +1,35 @@
 #!/usr/bin/env sh
 set -e
 
-role="${1:-app}"   # default=app
+###############################################################################
+# 1) Qual contêiner sou?  (app  ou  queue)
+###############################################################################
+role="${1:-app}"      # padrão = app
 
-# ─── Espera o MySQL ─────────────────────────────────────────
-wait-for.sh "$DB_HOST" "$DB_PORT"  # usa variáveis do .env
+###############################################################################
+# 2) Espera o MySQL ficar de pé
+###############################################################################
+wait-for.sh "$DB_HOST" "$DB_PORT"   # usa as variáveis do .env
 
-# primeira vez: cria .env e key
-[ -f .env ] || cp .env.example .env
-php artisan key:generate --force
+###############################################################################
+# 3) Somente **o serviço “app”** faz setup de ambiente e banco
+###############################################################################
+if [ "$role" = "app" ]; then
+  # cria .env na primeira execução e gera APP_KEY
+  [ -f .env ] || cp .env.example .env
+  php artisan key:generate --force
 
-# migrações (idempotente)
-php artisan migrate --force
+  # migrações + seed (idempotente)
+  php artisan migrate --force --seed
+fi
 
+###############################################################################
+# 4) Dispara o worker ou o PHP-FPM
+###############################################################################
 if [ "$role" = "queue" ]; then
   echo "🎧  Queue worker online…"
-  exec php artisan queue:work --max-jobs=3 --tries=2
+  exec php artisan queue:work --tries=3 --timeout=90
 fi
 
 echo "🚀  PHP-FPM online…"
-exec php-fpm   # <- mantém o contêiner vivo
+exec php-fpm                     # mantém o contêiner vivo

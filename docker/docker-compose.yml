@@ -1,61 +1,50 @@
+version: "3.9"
+
 services:
-# ────────────────────────────── APP (PHP-FPM) ──────────────────────────────
+  # ───────────────────────── APP (PHP-FPM) ─────────────────────────
   app:
     build:
-      context: ..                         # ← raiz do projeto
-      dockerfile: docker/php/Dockerfile   # ← Dockerfile dentro de docker/php
+      context: ..                              # raiz do projeto
+      dockerfile: docker/php/Dockerfile
     volumes:
-      - ../laravel:/var/www/html  
-              # hot-reload do código Laravel
-    environment:
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
+      - ../laravel:/var/www/html               # hot-reload do código
+    env_file:
+      - ../laravel/.env                        # mesmas variáveis para todos
+    depends_on: [db, redis]
+    networks: [cnab-net]
 
-    env_file: 
-      - ../laravel/.env
-    depends_on:
-      - db
-      - redis
-    networks:
-      - cnab-net
-
-# ────────────────────────────── QUEUE WORKER ──────────────────────────────
+  # ──────────────────────── QUEUE WORKER ───────────────────────────
   queue:
     build:
       context: ..
-      dockerfile: docker/php/Dockerfile                           # reutiliza a mesma imagem recém-buildada
+      dockerfile: docker/php/Dockerfile        # reutiliza a mesma imagem
     command: ["start-container", "queue"]
     volumes:
       - ../laravel:/var/www/html
-    env_file: 
+    env_file:
       - ../laravel/.env
-    depends_on:
-      - db
-      - redis
-    networks:
-      - cnab-net
+    depends_on: [db, redis]
+    networks: [cnab-net]
     deploy:
-      replicas: 1                         # escale com: docker compose up --scale queue=N
+      replicas: 3                              # ajuste conforme necessidade
 
-# ────────────────────────────── NGINX ──────────────────────────────
+  # ─────────────────────────── NGINX ──────────────────────────────
   nginx:
     image: nginx:1.27-alpine
     volumes:
       - ../laravel:/var/www/html:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - app
+    depends_on: [app]
     ports:
       - "80:80"
-    networks:
-      - cnab-net
+    networks: [cnab-net]
 
-# ────────────────────────────── REDIS ──────────────────────────────
+  # ─────────────────────────── REDIS ──────────────────────────────
   redis:
     image: redis:7-alpine
-    networks:
-      - cnab-net
+    networks: [cnab-net]
 
-# ────────────────────────────── MYSQL ─────────────────────────────
+  # ─────────────────────────── MYSQL ──────────────────────────────
   db:
     image: mysql:8.4
     environment:
@@ -65,10 +54,9 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     volumes:
       - db-data:/var/lib/mysql
-    networks:
-      - cnab-net
+    networks: [cnab-net]
 
-# ────────────────────────────── NETWORK & VOLUME ──────────────────────────
+# ─────────────────────────── NETWORK & VOLUME ─────────────────────
 networks:
   cnab-net:
 

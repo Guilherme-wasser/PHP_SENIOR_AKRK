@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route; // <-- não esqueça de importar Route!
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // 🔗 Registra suas rotas API com middleware e prefixo
+        Route::middleware('api')
+             ->prefix('api')
+             ->group(base_path('routes/api.php'));
     }
 }
