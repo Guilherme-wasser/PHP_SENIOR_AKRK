@@ -7,7 +7,7 @@ use App\Models\Fund;
 
 class CnabBuilder
 {
-    public function build(Fund $fund, Collection $rows, int $sequence): string
+    public function build(Fund $fund, Collection $rows, int $sequence,int $totalCentavos,int $qtdeDetalhes): string
     {
         $lines   = [];
 
@@ -29,11 +29,11 @@ class CnabBuilder
         }
 
         // 3. Rodapé
-        $total = $rows->sum(fn($r)=> $r[2]*100);
-        $lines[] = str_pad($total,11,'0',STR_PAD_LEFT) .
-                   '341' .            // banco
-                   '12345' .          // agencia
-                   '987651';          // conta
+        $lines[] = str_pad($totalCentavos, 11, '0', STR_PAD_LEFT) .
+                   str_pad($fund->mapping('bank_code'), 3, '0', STR_PAD_LEFT) .
+                   str_pad($fund->mapping('agency'), 5, '0', STR_PAD_LEFT) .
+                   str_pad($fund->mapping('account'), 6, '0', STR_PAD_LEFT);
+
 
         return implode("\n", $lines);
     }
