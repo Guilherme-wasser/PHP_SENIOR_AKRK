@@ -11,10 +11,17 @@ class Import extends Model
 
     protected $fillable = [
         'user_id', 'fund_id', 'sequence',
-        'original_file', 'cnab_file', 'status',
+        'original_file', 'cnab_file', 'status', 'disk_path', 'rows', 'total'
     ];
 
     /* ─── Relações ──────────────────────── */
-    public function user()  { return $this->belongsTo(User::class); }
-    public function fund()  { return $this->belongsTo(Fund::class); }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
 }

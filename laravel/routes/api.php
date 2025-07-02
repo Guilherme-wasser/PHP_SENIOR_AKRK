@@ -4,26 +4,32 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ImportController;
 
+/* ------------------ ROTAS DE AUTENTICAÇÃO ------------------ */
 Route::prefix('auth')->group(function () {
-    Route::post('login',    [AuthController::class, 'login']);
+    Route::post('login',   [AuthController::class, 'login']);
 
     Route::middleware('auth:api')->group(function () {
-        Route::get('me',       [AuthController::class, 'me']);
+        Route::get ('me',      [AuthController::class, 'me']);
         Route::post('logout',  [AuthController::class, 'logout']);
         Route::post('refresh', [AuthController::class, 'refresh']);
     });
 });
 
-
+/* ------------------ ROTAS PROTEGIDAS ------------------ */
 Route::middleware('auth:api')->group(function () {
+    /* Somente ADMIN pode iniciar importações */
+    Route::post('/imports', [ImportController::class, 'store'])
+         ->middleware(['auth:api', 'role:admin']);
 
-    // Apenas ADMIN pode criar importações
-    Route::post('/imports',  [ImportController::class,'store'])
-         ->middleware('role:admin');
+    /* ADMIN ou OPERADOR podem listar/baixar */
+    Route::middleware('role:admin|operador')->group(function () {
+        Route::get('/imports', [ImportController::class, 'index']);
+        Route::get('/imports/{import}', [ImportController::class, 'show']);
 
-    // Ambos os papéis podem listar/baixar
-    Route::get('/imports',                     [ImportController::class,'index']);
-    Route::get('/imports/{import}/download/excel', [ImportController::class,'downloadExcel']);
-    Route::get('/imports/{import}/download/cnab',  [ImportController::class,'downloadCnab']);
+        Route::get('/imports/{import}/download/excel',
+            [ImportController::class, 'downloadExcel']);
+
+        Route::get('/imports/{import}/download/cnab',
+            [ImportController::class, 'downloadCnab']);
+    });
 });
-
