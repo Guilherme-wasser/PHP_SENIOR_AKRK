@@ -21,4 +21,4 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-docker/db-data/
+backend/docker/db-data/

@@ -5,9 +5,9 @@ services:
       context: ../laravel                              # raiz do projeto
       dockerfile: Dockerfile
     volumes:
-      - /home/jubarte/PHP_SENIOR_AKRK/laravel:/var/www/html               # hot-reload do código
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/docker:/var/www/html               # hot-reload do código
     env_file:
-      - /home/jubarte/PHP_SENIOR_AKRK/laravel/.env                        # mesmas variáveis para todos
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/laravel/.env                        # mesmas variáveis para todos
     depends_on: [db, redis]
     networks: [cnab-net]
 
@@ -25,9 +25,9 @@ services:
       dockerfile: Dockerfile        # reutiliza a mesma imagem
     command: ["start-container", "queue"]
     volumes:
-      - /home/jubarte/PHP_SENIOR_AKRK/laravel:/var/www/html
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/laravel:/var/www/html
     env_file:
-      - /home/jubarte/PHP_SENIOR_AKRK/laravel/.env
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/laravel/.env 
     depends_on:
       app:
         condition: service_healthy
@@ -43,8 +43,8 @@ services:
   nginx:
     image: nginx:1.27-alpine
     volumes:
-      - /home/jubarte/PHP_SENIOR_AKRK/laravel:/var/www/html:ro
-      - /home/jubarte/PHP_SENIOR_AKRK/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/docker:/var/www/html:ro
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on: [app]
     ports:
       - "80:80"
@@ -65,7 +65,7 @@ services:
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
     volumes:
-      - /home/jubarte/PHP_SENIOR_AKRK/docker/db-data:/var/lib/mysql
+      - /home/jubarte/PHP_SENIOR_AKRK/backend/docker/db-data:/var/lib/mysql
     networks: [cnab-net]
     deploy:
       resources:
