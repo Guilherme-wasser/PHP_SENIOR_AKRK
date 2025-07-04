@@ -1,6 +1,26 @@
+# CNAB Generator — Desafio Técnico
+
+## ⚡ Requisitos do Sistema
+
+Para rodar este projeto do zero, você precisa de:
+
+✅ **Sistema operacional:**  
+- Linux (Ubuntu 20.04+ recomendado) **ou** Windows/Mac com WSL2/Docker Desktop.
+
+✅ **Dependências do Sistema:**  
+- [Docker Engine](https://docs.docker.com/engine/install/) >= 20.x  
+- [Docker Compose](https://docs.docker.com/compose/install/) >= 2.x  
+- [Node.js](https://nodejs.org/) >= 18.x (apenas para rodar `npm install`)  
+- [npm](https://www.npmjs.com/) >= 9.x  
+- [Composer](https://getcomposer.org/download/) >= 2.x  
+- **Git** (para clonar o repositório)
+
+## ⚡ Passo a passo para rodar localmente
+
+```bash
 # 1) Clone o repositório
 git clone https://github.com/Guilherme-wasser/PHP_SENIOR_AKRK.git
-cd seu-projeto
+cd PHP_SENIOR_AKRK
 
 # 2) Instale dependências do backend Laravel
 cd backend/laravel
@@ -17,3 +37,6 @@ docker compose up -d
 # 5) Rode as migrações e seeds (já popula tudo!)
 docker compose exec app php artisan migrate:fresh --seed
 
+Frontend (Vite + Vue): http://localhost:5173
+
+API Laravel: http://localhost/api
