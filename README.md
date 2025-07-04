@@ -5,7 +5,7 @@
 Para rodar este projeto do zero, você precisa de:
 
 ✅ **Sistema operacional:**  
-- Linux (Ubuntu 20.04+ recomendado) **ou** Windows/Mac com WSL2/Docker Desktop.
+- Linux (Ubuntu 20.04+ recomendado)
 
 ✅ **Dependências do Sistema:**  
 - [Docker Engine](https://docs.docker.com/engine/install/) >= 20.x  
