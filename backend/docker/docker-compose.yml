@@ -74,6 +74,20 @@ services:
           memory: 512M
     restart: unless-stopped
 
+
+  frontend:
+    build:
+      context: /home/jubarte/PHP_SENIOR_AKRK/frontend/vue
+      dockerfile: Dockerfile  
+    ports:
+      - "5173:5173"               # Corrigido: Vite roda na 5173 do container
+    volumes:
+      - /home/jubarte/PHP_SENIOR_AKRK/frontend/vue:/app
+    working_dir: /app
+    command: ["npm", "run", "dev"]
+    networks: [cnab-net]
+    depends_on: [nginx]
+
 # ─────────────────────────── NETWORK & VOLUME ─────────────────────
 networks:
   cnab-net:

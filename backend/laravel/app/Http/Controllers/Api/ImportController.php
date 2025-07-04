@@ -16,7 +16,7 @@ class ImportController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api', 'role:admin']);
+        $this->middleware('auth:api');
     }
 
     /* --------------------------------------------------------------
@@ -25,6 +25,7 @@ class ImportController extends Controller
     public function index(Request $request)
     {
         $imports = Import::with(['fund', 'user'])
+            ->when($request->filled('sequence'), fn ($q) => $q->where('sequence', $request->sequence))
             ->when($request->filled('status'),     fn ($q) => $q->where('status', $request->status))
             ->when($request->filled('date_from'),  fn ($q) => $q->whereDate('created_at', '>=', $request->date_from))
             ->when($request->filled('date_to'),    fn ($q) => $q->whereDate('created_at', '<=', $request->date_to))
