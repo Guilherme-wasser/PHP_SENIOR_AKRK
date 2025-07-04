@@ -36,6 +36,7 @@ docker compose up -d
 
 # 5) Rode as migrações e seeds (já popula tudo!)
 docker compose exec app php artisan migrate:fresh --seed
+docker compose exec app php artisan permission:cache-reset
 
 Frontend (Vite + Vue): http://localhost:5173
 
