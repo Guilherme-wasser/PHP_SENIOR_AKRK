@@ -38,7 +38,7 @@ docker compose up -d
 docker compose exec app php artisan migrate:fresh --seed
 docker compose exec app php artisan permission:cache-reset
 
-Frontend (Vite + Vue): http://localhost:5173
+Frontend (Vue): http://localhost:5173
 
 API Laravel: http://localhost/api
 
