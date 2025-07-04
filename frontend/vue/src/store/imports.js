@@ -66,9 +66,7 @@ export const useImportStore = defineStore('imports', {
       fd.append('fund_id', fund_id)
       fd.append('sequence', sequence)
       fd.append('file', file)
-      return api.post('/imports', fd, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      return api.post('/imports', fd)
     },
   },
 })

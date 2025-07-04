@@ -9,7 +9,7 @@ class FundSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('funds')->insert([
+        $funds = [
             [
                 'name'   => 'Fundo Alpha',
                 'cnpj'   => '12.345.678/0001-01',
@@ -28,6 +28,13 @@ class FundSeeder extends Seeder
                 'street' => 'Alameda Santos',
                 'number' => '789',
             ],
-        ]);
+        ];
+
+        foreach ($funds as $fund) {
+            DB::table('funds')->updateOrInsert(
+                ['name' => $fund['name']], // condição WHERE
+                $fund                       // valores a inserir/atualizar
+            );
+        }
     }
 }

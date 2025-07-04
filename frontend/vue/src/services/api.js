@@ -7,8 +7,10 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(config => {
-  const { token } = useAuthStore()
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const auth = useAuthStore()   // Pega a store inteira
+  if (auth.token) {
+    config.headers.Authorization = `Bearer ${auth.token}`
+  }
   return config
 })
 
@@ -18,9 +20,11 @@ api.interceptors.response.use(
     const auth = useAuthStore()
     if (err.response?.status === 401 && auth.token) {
       try {
-        await auth.refresh()           // chama /auth/refresh
-        return api(err.config)         // refaz a requisição
-      } catch { auth.logout() }
+        await auth.refresh()
+        return api(err.config)
+      } catch {
+        auth.logout()
+      }
     }
     return Promise.reject(err)
   },

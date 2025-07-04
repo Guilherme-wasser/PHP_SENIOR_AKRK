@@ -38,9 +38,13 @@ const sequence = ref('')
 const file = ref(null)
 
 onMounted(async () => {
-  // Busca lista de fundos fictícios
-  const { data } = await api.get('/funds') // certifique-se de ter essa rota
-  funds.value = data
+  try {
+    const { data } = await api.get('/funds')
+    funds.value = data
+  } catch (err) {
+    console.error('Erro ao carregar fundos:', err)
+    alert('Erro ao carregar lista de fundos. Verifique seu login ou servidor.')
+  }
 })
 
 function onFileChange(e) {
@@ -48,11 +52,34 @@ function onFileChange(e) {
 }
 
 async function onSubmit() {
-  await store.create({
-    fund_id: fund.value,
-    sequence: sequence.value,
-    file: file.value
-  })
-  alert('Importação enviada para fila!')
+  if (!fund.value) {
+    alert('Selecione um fundo.')
+    return
+  }
+  if (!sequence.value) {
+    alert('Digite a sequência.')
+    return
+  }
+  if (!file.value) {
+    alert('Selecione o arquivo Excel.')
+    return
+  }
+
+  try {
+    await store.create({
+      fund_id: fund.value,
+      sequence: sequence.value,
+      file: file.value
+    })
+    alert('Importação enviada para fila!')
+
+    // Limpa campos
+    fund.value = ''
+    sequence.value = ''
+    file.value = null
+  } catch (err) {
+    console.error('Erro ao enviar importação:', err)
+    alert('Erro ao enviar importação. Verifique os dados e tente novamente.')
+  }
 }
 </script>
