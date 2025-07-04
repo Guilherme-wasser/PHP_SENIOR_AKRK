@@ -40,3 +40,17 @@ docker compose exec app php artisan migrate:fresh --seed
 Frontend (Vite + Vue): http://localhost:5173
 
 API Laravel: http://localhost/api
+
+'email' =>'test@example.com'
+'name'     => 'Test User'
+'password' => 'password'
+'role'     => 'user'
+'from' => 'database/seeders/DatabaseSeeder.php'
+
+'email' => 'admin@demo.com'
+'name'  => 'Admin',
+'password' => 'secret'
+'role'     => 'admin',
+'from' =>  'database/seeders/AdminUserSeeder.php'
+
+            
