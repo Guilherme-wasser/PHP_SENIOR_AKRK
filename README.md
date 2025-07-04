@@ -32,6 +32,21 @@ npm install
 
 # 4) Suba todos os containers em segundo plano
 cd ../../backend/docker
+
+Antes de subir os containers, ajuste os caminhos dos volumes no docker-compose.yml:
+
+Execute pwd no terminal para copiar o caminho absoluto do seu projeto.
+
+Atualize os volumes de cada serviço com esse caminho.
+
+Exemplo:
+
+volumes:
+  - /SEU/CAMINHO/ABSOLUTO/backend/laravel:/var/www/html
+  - /SEU/CAMINHO/ABSOLUTO/frontend/vue:/app
+
+
+
 docker compose up -d
 
 # 5) Rode as migrações e seeds (já popula tudo!)
